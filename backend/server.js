@@ -25,26 +25,31 @@ app.post("/generate-mcqs", async (req, res) => {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [
-          { role: "system", content: "You are a helpful assistant that generates MCQs." },
-          { role: "user", content: prompt },
+          {
+            role: "system",
+            content: "You are a helpful assistant that generates MCQs.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
         ],
         temperature: 0.7,
       }),
     });
 
     const data = await response.json();
-    try {
-  const output = JSON.parse(data.choices[0].message.content);
-  res.json(output);
-} catch (parseErr) {
-  console.error("Failed to parse OpenAI response:", data.choices[0].message.content);
-  res.status(500).json({ error: "Invalid JSON from OpenAI", raw: data.choices[0].message.content });
-}
-    if (!response.ok) {
-        throw new Error(`OpenAI API error: ${data.error.message}`);
-        }
+
+    // Error from OpenAI side
+    if (data.error) {
+      console.error("OpenAI Error:", data.error);
+      return res.status(500).json({ error: data.error.message });
+    }
+
+    const output = JSON.parse(data.choices[0].message.content);
+    res.json(output);
   } catch (err) {
-    console.error("Error:", err);
+    console.error("Server Error:", err);
     res.status(500).json({ error: "Failed to generate MCQs" });
   }
 });
@@ -52,3 +57,7 @@ app.post("/generate-mcqs", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+module.exports = app; // Export the app for testing purposes
+// This allows the server to be imported in test files
+// and helps in setting up tests without starting the server. 
+// It is a common practice in Node.js applications to export the app instance.
