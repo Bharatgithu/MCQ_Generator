@@ -1,0 +1,45 @@
+name: First CI Workflows
+
+
+on:
+    push:
+        branches: [main, dev, New_Feature]
+    pull_request:
+        branches: [main, dev, New_Feature]
+
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+
+            - name: Set Node.js version
+              uses: actions/setup-node@v2
+              with: 
+                  node-version: '18'
+
+
+            - name: Install dependencies
+              run: npm install
+    deploy:
+        name: Deploy to Netlify
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+
+          - name: Install Netlify CLI
+            run: npm install -g netlify-cli
+
+          - name: Deploy to Netlify
+            run: |
+              netlify deploy --dir=./Frontend_Dev --prod --site=$NETLIFY_SITE_ID
+            env:
+              NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+              NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
