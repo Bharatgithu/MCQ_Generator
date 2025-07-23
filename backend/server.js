@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const HF_API_URL = "https://huggingface.co/aayeshanakarmi/mcq-answer-generation-redstone-flant5small-2";
+const HF_API_URL = "https://huggingface.co/valhalla/t5-base-qg-hl";
 
 app.use(cors());
 app.use(express.json());
