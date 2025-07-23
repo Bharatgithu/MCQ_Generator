@@ -27,8 +27,13 @@
       const reader = new FileReader();
       reader.onload = async () => {
         const image = reader.result;
-        const result = await Tesseract.recognize(image, 'eng');
+       /* const result = await Tesseract.recognize(image, 'eng');
         const text = result.data.text;
+*/
+// const result = await Tesseract.recognize(image, 'eng');
+// const text = result.data.text;
+
+const text = "The sun rises in the east and sets in the west. It provides light and heat to the Earth.";
 
         loadingText.textContent = "Generating MCQs...";
 
