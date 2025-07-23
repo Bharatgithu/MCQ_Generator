@@ -13,6 +13,9 @@ app.use(express.json());
 app.post("/generate-mcqs", async (req, res) => {
   const { text } = req.body;
 
+  console.log("📩 Received text:", text);
+  console.log("🔑 OPENAI_API_KEY loaded:", process.env.OPENAI_API_KEY ? "✅ YES" : "❌ NO");
+
   const prompt = `Generate 5 multiple choice questions (MCQs) from the following text. Each question must include 1 correct and 3 incorrect options. Return the result as a JSON array of objects with fields: question, options[], answer.\n\nText:\n${text}`;
 
   try {
@@ -40,19 +43,23 @@ app.post("/generate-mcqs", async (req, res) => {
 
     const data = await response.json();
 
-    // Error from OpenAI side
+    // Log the full OpenAI API response
+    console.log("📤 OpenAI API response:", JSON.stringify(data, null, 2));
+
+    // If OpenAI returns an error field
     if (data.error) {
-      console.error("OpenAI Error:", data.error);
+      console.error("❌ OpenAI API Error:", data.error);
       return res.status(500).json({ error: data.error.message });
     }
 
     const output = JSON.parse(data.choices[0].message.content);
     res.json(output);
   } catch (err) {
-    console.error("Server Error:", err);
+    console.error("❗ Server Error:", err.message || err);
     res.status(500).json({ error: "Failed to generate MCQs" });
   }
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
