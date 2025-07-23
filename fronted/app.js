@@ -32,7 +32,7 @@ fileInput.addEventListener("change", async (event) => {
 });
 
 async function generateMCQsFromText(text) {
-  const apiKey = "YOUR_OPENAI_API_KEY_HERE"; // Replace with your API key
+  const apiKey = "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"; // Replace with your API key
 
   const prompt = `Generate 5 multiple choice questions (MCQs) from the following text. Each question must include 1 correct and 3 incorrect options. Return the result as a JSON array of objects with fields: question, options[], answer.\n\nText:\n${text}`;
 
