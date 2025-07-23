@@ -33,8 +33,16 @@ app.post("/generate-mcqs", async (req, res) => {
     });
 
     const data = await response.json();
-    const output = JSON.parse(data.choices[0].message.content);
-    res.json(output);
+    try {
+  const output = JSON.parse(data.choices[0].message.content);
+  res.json(output);
+} catch (parseErr) {
+  console.error("Failed to parse OpenAI response:", data.choices[0].message.content);
+  res.status(500).json({ error: "Invalid JSON from OpenAI", raw: data.choices[0].message.content });
+}
+    if (!response.ok) {
+        throw new Error(`OpenAI API error: ${data.error.message}`);
+        }
   } catch (err) {
     console.error("Error:", err);
     res.status(500).json({ error: "Failed to generate MCQs" });
