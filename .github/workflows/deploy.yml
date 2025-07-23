@@ -27,7 +27,7 @@ jobs:
             - name: Install dependencies
               run: npm install
 
-              
+
     deploy:
         name: Deploy to Netlify
         runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
 
           - name: Deploy to Netlify
             run: |
-              netlify deploy --dir=./Frontend_Dev --prod --site=$NETLIFY_SITE_ID
+              netlify deploy --dir=./fronted --prod --site=$NETLIFY_SITE_ID
             env:
               NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
               NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
