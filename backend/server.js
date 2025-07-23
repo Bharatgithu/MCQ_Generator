@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const HF_API_URL = "https://api-inference.huggingface.co/models/valhalla/t5-base-qg-hl";
+const HF_API_URL = "https://api-inference.huggingface.co/models/valhalla/t5-small-qg-prepend";
 
 app.use(cors());
 app.use(express.json());
