@@ -1,39 +1,50 @@
-<input type="file" id="fileInput" />
-<div id="loadingText"></div>
-<pre id="extractedText"></pre>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCQ Generator</title>
+</head>
+<body>
+  <h1>Upload an Image or PDF</h1>
+  <input type="file" id="fileInput">
+  <div id="loadingText"></div>
+  <pre id="extractedText"></pre>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
-<script>
-const fileInput = document.getElementById("fileInput");
-const extractedTextDiv = document.getElementById("extractedText");
-const loadingText = document.getElementById("loadingText");
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const extractedTextDiv = document.getElementById("extractedText");
+    const loadingText = document.getElementById("loadingText");
 
-fileInput.addEventListener("change", async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+    fileInput.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
 
-  extractedTextDiv.textContent = "";
-  loadingText.textContent = "Extracting text...";
+      extractedTextDiv.textContent = "";
+      loadingText.textContent = "Extracting text...";
 
-  const reader = new FileReader();
-  reader.onload = async () => {
-    const image = reader.result;
-    const result = await Tesseract.recognize(image, 'eng');
-    const text = result.data.text;
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const image = reader.result;
+        const result = await Tesseract.recognize(image, 'eng');
+        const text = result.data.text;
 
-    loadingText.textContent = "Generating MCQs...";
+        loadingText.textContent = "Generating MCQs...";
 
-    const res = await fetch("https://your-backend-url.onrender.com/generate-mcqs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
+        const res = await fetch("https://mcq-generator-wtts.onrender.com", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+
+        const mcqs = await res.json();
+        loadingText.textContent = "";
+        extractedTextDiv.textContent = JSON.stringify(mcqs, null, 2);
+      };
+
+      reader.readAsDataURL(file);
     });
-
-    const mcqs = await res.json();
-    loadingText.textContent = "";
-    extractedTextDiv.textContent = JSON.stringify(mcqs, null, 2);
-  };
-
-  reader.readAsDataURL(file);
-});
-</script>
+  </script>
+</body>
+</html>
